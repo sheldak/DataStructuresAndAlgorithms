@@ -17,67 +17,42 @@ void selectionSort(int t[N][N], int k, int n){
 }
 
 void merge(int t[N], int p[N], int start, int end){
-    if(end-start == 0)
-        return;
-
     int s1=0, s2=0;
+    for(int i=0; i<start; i++)
+        s1 += p[i];
 
-    if(end-start == 1){
-        for(int i=0; i<start; i++)
-            s1 += p[i];
+    s2=s1;
+    for(int i=start; i<(start+end)/2 + 1; i++)
+        s2 += p[i];
 
-        s2 = s1+p[start];
+    int f=s2;
+    for(int i=(start+end)/2+1; i<=end; i++)
+        f+=p[i];
 
-        int i=0, j=0;
-        int res[N];
-        int k=0;
-        while(i<p[start] || j<p[end]){
-            if(i>=p[start] || (j<p[end] && t[s1+i]>t[s2+j])){
-                res[k++] = t[s2+j];
-                j++;
-            }
-            else{
-                res[k++] = t[s1+i];
-                i++;
-            }
+    int i=s1, j=s2;
+    int res[N];
+    int k=0;
+    while(i<s2 || j<f){
+        if(i>=s2 || (j<f && t[i]>t[j])){
+            res[k++] = t[j];
+            j++;
         }
-
-        for(int l=s1; l<s2+p[end]; l++){
-            t[l] = res[l-s1];
+        else{
+            res[k++] = t[i];
+            i++;
         }
     }
-    else{
-        merge(t, p, start, (start+end)/2);
-        merge(t, p, (start+end)/2 + 1, end);
 
-        for(int i=0; i<start; i++)
-            s1 += p[i];
+    for(int l=s1; l<f; l++){
+        t[l] = res[l-s1];
+    }
+}
 
-        s2=s1;
-        for(int i=start; i<(start+end)/2 + 1; i++)
-            s2 += p[i];
-
-        int f=s2;
-        for(int i=(start+end)/2+1; i<=end; i++)
-            f+=p[i];
-
-        int i=s1, j=s2;
-        int res[N];
-        int k=0;
-        while(i<s2 || j<f){
-            if(i>=s2 || (j<f && t[i]>t[j])){
-                res[k++] = t[j];
-                j++;
-            }
-            else{
-                res[k++] = t[i];
-                i++;
-            }
-        }
-
-        for(int l=s1; l<f; l++){
-            t[l] = res[l-s1];
-        }
+void mergeSort(int t[N], int p[N], int start, int end){
+    if(end-start >= 1){
+        mergeSort(t, p, 0, (start+end)/2);
+        mergeSort(t, p, (start+end)/2 + 1, end);
+        merge(t, p, start, end);
     }
 }
 
@@ -128,7 +103,7 @@ void c1_2(){
     }
     cout<<endl;
 
-    merge(tab, p, 0, k-1);
+    mergeSort(tab, p, 0, k-1);
 
     for(int i=0; i<N; i++)
         cout<<tab[i]<<" ";
