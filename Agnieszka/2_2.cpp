@@ -10,31 +10,18 @@ struct node{
     node *next;
 };
 void add(node*&head, int n){
-    node *p= new node;
+    node *p=new node;
     p->val=n;
-    p->next=head;
-    head=p;
-}
-void insertt(node *el, node *sorted){
-    while(sorted->next!=nullptr && sorted->next->val<el->val){
-        sorted=sorted->next;
+    p->next=nullptr;
+    if(head==nullptr || head->val>=n){
+        p->next=head;
+        head=p;
+        return;
     }
-    el->next=sorted->next;
-    sorted->next=el;
-}
-node* insort(node *head){
-    node *sorted= new node;
-    sorted->next=nullptr;
-    while(head!=nullptr){
-        node *tmp=head;
-        head=head->next;
-        tmp->next=nullptr;
-        insertt(tmp, sorted);
-    }
-    node *del=sorted;
-    sorted=sorted->next;
-    delete del;
-    return sorted;
+    node *curr=head;
+    while(curr->next!=nullptr && curr->next->val<n) curr=curr->next;
+    p->next=curr->next;
+    curr->next=p;
 }
 void nsort(int *tab, int n){
     node *aux[n]; /// [0-(n-1)][n-(2n-1)]...[n*(n-1)-(n*n-1)]
@@ -44,13 +31,11 @@ void nsort(int *tab, int n){
         add(aux[tab[i]/n], tab[i]);
     }
     for(int i=0;i<n;i++){
-        aux[i]=insort(aux[i]);
         while(aux[i]!=nullptr){
             tab[ind++]=aux[i]->val;
             aux[i]=aux[i]->next;
         }
     }
-
 }
 main(){
     int n;
