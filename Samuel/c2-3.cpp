@@ -18,20 +18,34 @@ struct cont{
 
 int full(cont c[N], int A){
     int curr_h = 0;
-    int t[MAX];
+    int minn = c[0].dr.y;
+    int maxx = c[0].ul.y;
+
+    for(int i=1; i<N; i++){
+        if(c[i].dr.y < minn)
+            minn = c[i].dr.y;
+        if(c[i].ul.y > maxx)
+            maxx = c[i].ul.y;
+    }
+
+    int *t = nullptr;
+    t = new int[maxx-minn+1];
+
     for(int i=0; i<MAX; i++)
         t[i] = 0;
 
     for(int i=0; i<N; i++){
-        int k=c[i].dr.y;
-        while(k<=c[i].ul.y){
+        int k=c[i].dr.y - minn;
+        while(k<=c[i].ul.y - minn){
             t[k] = t[k] + c[i].dr.x - c[i].ul.x;
             k++;
         }
     }
 
-    while(A>0)
-        A-=t[curr_h++];
+    curr_h = minn;
+    while(A>0 && curr_h <= maxx)
+            A-=t[curr_h++];
+
 
     int res=0;
 
