@@ -6,12 +6,6 @@ using namespace std;
 
 const int N = 100;
 
-struct leng{
-    int x = 0; // do zliczania ile jest wyrazow o literze tej samej lub wczesniejszej w alfabecie
-    int n = 0;      // do zliczania ile jest wyrazow o takiej samej literze
-    string S[N] = {""};     // do przechowywania wyrazow o tej literze
-};
-
 void countingSort(string S[N], bool letters, int pos, int w){       // sortowanie wyrazow
 
     if(letters){                    // sortowanie po literach o indeksie pos
@@ -21,24 +15,19 @@ void countingSort(string S[N], bool letters, int pos, int w){       // sortowani
 
         if(w-from - 1 > 0){
             string T[N];
-            leng C[26];
+            int C[26];
 
-            for(int i=0; i<26; i++) {
-                C[i].x = 0;
-                C[i].n = 0;
-            }
+            for(int i=0; i<26; i++)
+                C[i] = 0;
 
-            for(int i=from; i<w; i++) {
-                C[S[i][pos] - 97].S[ C[S[i][pos] - 97].x ] = S[i];
-                C[S[i][pos] - 97].x++;
-                C[S[i][pos] - 97].n++;
-            }
+            for(int i=from; i<w; i++)
+                C[S[i][pos] - 97]++;
 
             for(int i=1; i<26; i++)
-                C[i].x += C[i-1].x;
+                C[i] += C[i-1];
 
             for(int i=w-1; i>=from; i--)
-                T[--C[S[i][pos] - 97].x] = C[S[i][pos] - 97].S[--C[S[i][pos] - 97].n];
+                T[--C[S[i][pos] - 97]] = S[i];
 
 
             for(int i=from; i<w; i++)
@@ -47,19 +36,19 @@ void countingSort(string S[N], bool letters, int pos, int w){       // sortowani
     }
     else{       // sortowanie po dlugosci wyrazu
         string T[N] = {};
-        leng C[N];
+        int C[N];
 
-        for(int i=0; i<w; i++) {
-            C[S[i].size()].S[ C[S[i].size()].x  ] = S[i];
-            C[S[i].size()].x++;
-            C[S[i].size()].n++;
-        }
+        for(int i=0; i<N; i++)
+            C[i] = 0;
+
+        for(int i=0; i<w; i++)
+            C[S[i].size()]++;
 
         for(int i=1; i<N; i++)
-            C[i].x += C[i-1].x;
+            C[i] += C[i-1];
 
         for(int i=w-1; i>=0; i--)
-            T[--C[S[i].size()].x] = C[S[i].size()].S[--C[S[i].size()].n];
+            T[--C[S[i].size()]] = S[i];
 
         for(int i=0; i<w; i++)
             S[i] = T[i];
