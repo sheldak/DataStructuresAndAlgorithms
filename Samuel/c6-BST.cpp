@@ -88,41 +88,39 @@ void erase(node *&p, int key){
         }
         else{               // elements on the left side
             if(e->left == ch){      // element to change with is the left child of that to erase
-                if(ch->left == nullptr){        // element to change has no children
-                    ch->parent = e->parent;
-                    ch->right = e->right;
-                    ch->left = nullptr;
-                }
-                else{                  // element to change has left child
-                    ch->parent = e->parent;
-                    ch->right = e->right;
-                }
+                ch->parent = e->parent;
+                ch->right = e->right;
+                if(ch->right != nullptr)
+                    ch->right->parent = ch;
 
-                if(e->parent == nullptr)        // erasing the root
+                if(e->parent == nullptr)           // erasing the root
                     p = ch;
-                else if(e->parent->left == nullptr || e->parent->left != e)     // erasing right child
+                else if(e->parent->right == e)     // erasing right child
                     e->parent->right = ch;
-                else                                                            // erasing left child
+                else                               // erasing left child
                     e->parent->left = ch;
 
                 delete e;
             }
             else{
-                if(ch->left == nullptr){    // element to change has no children
+                if(ch->left == nullptr){    // element to change with has no children
                     ch->right = e->right;
                     ch->left = e->left;
+
+                    ch->parent->right = nullptr;
+
                     ch->parent = e->parent;
 
-                    if(e->parent == nullptr)        // erasing the root
+                    if(e->parent == nullptr)           // erasing the root
                         p = ch;
-                    else if(e->parent->left == nullptr || e->parent->left != e)     // erasing right child
+                    else if(e->parent->right == e)     // erasing right child
                         e->parent->right = ch;
-                    else                                                            // erasing left child
+                    else                               // erasing left child
                         e->parent->left = ch;
 
                     delete e;
                 }
-                else{                       // element to change has left child
+                else{                       // element to change with has left child
                     ch->right = e->right;
 
                     ch->left->parent = ch->parent;
