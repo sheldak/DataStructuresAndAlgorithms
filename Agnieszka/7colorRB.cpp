@@ -19,22 +19,22 @@ int findMinPath(node *nod){
     return nod->minPath;
 }
 bool color(node *root, int bl, int minPath){ // bl - left black nodes to use minPath- min distance to nearest null
-    if(bl==-1) return false;
+    if(bl==-1) return false; // needed more black nodes than available
     if(root == nullptr) return true;
-    if(root->minPath==minPath){
+    if(root->minPath==minPath){ // node on the shortest path = must be black
         root->color=black;
         return ( color(root->lt, bl-1, minPath-1)&& color(root->rt, bl-1, minPath-1) );
     }
     else if(root->par->color==red){
-            root->color=black;
-            return ( color(root->lt, bl-1, minPath-1)&& color(root->rt, bl-1, minPath-1) );
+        root->color=black;
+        return ( color(root->lt, bl-1, minPath-1)&& color(root->rt, bl-1, minPath-1) );
     }
     else root->color=red;
     return ( color(root->lt, bl, minPath-1)&& color(root->rt, bl, minPath-1) );
 
 }
 bool colorRB(node *root){
-    int height=findMinPath(root); // minimal dist to null from root
+    int height=findMinPath(root); // minimal dist to null from root, this will be the nr of black nodes on any path root-null
     root->color=black;
     return (color(root->lt, height-1, height-1) && color(root->rt, height-1, height-1));
 }
@@ -45,7 +45,9 @@ main(){
     root = insert(root, 2,nullptr);
     root = insert(root, 4,nullptr);
     root = insert(root, 6,nullptr);
-    cout<<colorRB(root);
+    root = insert(root, 7,nullptr);
+    root = insert(root, 8,nullptr);
+    cout<<colorRB(root)<<endl;
     cout<<root->rt->color;
 }
 node* findMin(node* nod){
